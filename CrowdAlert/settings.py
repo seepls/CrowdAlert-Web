@@ -74,6 +74,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'CrowdAlert.wsgi.application'
 
+# SECURE_SSL_REDIRECT = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -107,6 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Collectstatic will copy js & css files
 STATICFILES_DIRS = [
   os.path.join(BASE_DIR, 'build/static'),
+#   os.path.join(BASE_DIR, 'build/'),
 ]
 
 # Internationalization
