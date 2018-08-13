@@ -14,11 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # API paths
+    path('api/events/',include('api.events.urls')),
+    path('api/images/',include('api.images.urls')),
+    path('api/location/',include('api.location.urls')),
+    # Static files that needs to be on the project root so that 
+    # Chrome recognizes our app as a PWA
     re_path(r'^service-worker.js', TemplateView.as_view(
         template_name="service-worker.js",
         content_type='application/javascript',
@@ -26,6 +32,8 @@ urlpatterns = [
     re_path(r'^manifest.json', TemplateView.as_view(
         template_name="manifest.json",
     ), name='manifest.json'),
-    re_path('.*', TemplateView.as_view(
+    re_path('/', TemplateView.as_view(
+        template_name='index.html')),
+    re_path('', TemplateView.as_view(
         template_name='index.html')),
 ]
