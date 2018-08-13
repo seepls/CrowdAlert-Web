@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+node_modules/
 
 # testing
 /coverage
@@ -24,6 +25,7 @@ yarn-error.log*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+__pycache__
 *.py[cod]
 *$py.class
 
@@ -70,7 +72,7 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
-
+.pylintrc
 # Translations
 *.mo
 *.pot
