@@ -1,4 +1,4 @@
-"""Django view module
+""" Django view module
 """
 
 import json
@@ -11,10 +11,10 @@ from api.location.gps import distance
 DB = settings.FIREBASE.database()
 
 class EventView(APIView):
-    """API view class for events
+    """ API view class for events
     """
     def get(self, request):
-        """Event data for a given uuid
+        """ Event data for a given uuid
         GET request parameters:
             [REQUIRED]
             id: firebase event id
@@ -76,33 +76,65 @@ class MultipleEventsView(APIView):
                                         not given.]
             [JsonResponse] -- [Containing the event data]
         """
+
+        # Should use API View here
         lat = float(request.GET.get('lat', ''))
         lng = float(request.GET.get('long', ''))
         thresold = float(request.GET.get('dist', ''))
-        # We need latitute, longiture and the thresold distance in-order to
-        # locate the nearby incidents
         if lat == '' or lng == '' or thresold == '':
             return HttpResponseBadRequest("Bad request")
-        # Fetch all the incidents in the database & query them in order to
-        # group them  by location
-        # Note: THIS METHOD IS VERY INEFFICIENT & COSTLY AT THE SAME TIME
-        # WE NEED TO REPLACE IT WITH SOME GEOHASH BASED SOLUTION ASAP
+
         incidents = DB.child('incidents').get()
         data = []
+
+        # Find events which are inside the circle
+
+        # This method is highly inefficient
+        # In takes O(n) time for each request
+        # Should use a GeoHash based solution instead of this
         for incident in incidents.each():
             event = dict(incident.val())
             temp = {}
             temp['key'] = incident.key()
-            # Store the coordinates
             temp['lat'] = event['location']['coords']['latitude']
             temp['long'] = event['location']['coords']['longitude']
-
+            temp['category'] = event['category']
+            temp['title'] = event['title']
+            temp['datetime'] = event['datetime']
             tmplat = float(event['location']['coords']['latitude'])
-            tmplng = float(event['location']['coords']['longitude'])
-            # Find the distance for the incidents
+            tmplng = float(event['location']['coords']['longitude'])                
             dist = distance(tmplat, tmplng, lat, lng)
-            # If the distance is lower than expected, append the incident
             if dist < thresold:
                 data.append(temp)
 
+        # Cluster the events
+        cluster_thresold = float(request.GET.get('min',0))
+        # This code should also be present on client side
+        if cluster_thresold:
+            # clustered incidents data
+            clustered_data = []
+            # Consider each node as root for now
+            for root in data:
+                # If is clustered flag is not present
+                if not root.get('isClustered', False):
+                    # Loop though the points
+                    for child in data:
+                        # Base case
+                        if child['key'] == root['key']:
+                            continue
+                        # If node is not clustered
+                        if not child.get('isClustered',False):
+                            # Calculate the distance
+                            temp_distance = distance(root['lat'], root['long'],
+                                                     child['lat'], child['long'])
+                            # If two points are too close on map cluster them
+                            if temp_distance < cluster_thresold:
+                                # Update root
+                                root['isClustered'] = True
+                                root['lat'] = (root['lat'] + child['lat'])/2
+                                root['long'] = (root['long'] + child['long'])/2
+                                # Mark child
+                                child['isClustered'] = True
+                    clustered_data.append(root)
+            return JsonResponse(clustered_data, safe=False)
         return JsonResponse(data, safe=False)

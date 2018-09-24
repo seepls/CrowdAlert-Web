@@ -9,20 +9,15 @@ function calcAge(timestamp) {
   let text = '';
   if (duration < 60) {
     text = 'Just now';
-  }
-  if (duration < 120) {
+  } else if (duration < 120) {
     text = 'About a minute ago';
-  }
-  if (duration < 3600) {
+  } else if (duration < 3600) {
     text = `About ${Math.floor(duration / 60)} minutes ago`;
-  }
-  if (duration < 3600 * 24) {
+  } else if (duration < 3600 * 24) {
     text = `About ${Math.floor(duration / 3600)} hours ago`;
-  }
-  if (duration < 3600 * 24 * 100) {
+  } else if (duration < 3600 * 24 * 100) {
     text = `About ${Math.floor(duration / (3600 * 24))} days ago`;
-  }
-  if (duration < 3600 * 24 * 365) {
+  } else if (duration < 3600 * 24 * 365) {
     text = `About ${Math.floor(duration / (3600 * 24 * 30))} months ago`;
   }
   return text;

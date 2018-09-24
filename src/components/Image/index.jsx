@@ -1,53 +1,132 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Image, Modal, Responsive } from 'semantic-ui-react';
+import fetch from 'isomorphic-fetch';
+import { GET_IMAGE_URLS } from '../../utils/apipaths';
 
 /**
  * [ImageModal Displays a small thumbnail & opens a large modal onclick]
  * @param {[type]} props [description]
  */
 
+// Removed in a future MR
 const undefinedURL = 'https://firebasestorage.googleapis.com/v0/b/crowdalert-4fa46.appspot.com/o/images%2Fundefined?alt=media';
 
-const ImageModal = (props) => {
-  // console.log(props.imageUrls.url,undefinedURL, props.imageUrls.url === undefinedURL);
-  if (props.imageUrls.url !== undefinedURL && props.imageUrls.url !== '') {
+export default class ImageModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      uuid: this.props.uuid,
+      loading: !!this.props.uuid,
+      base64: this.props.base64,
+    };
+  }
+  componentWillMount() {
+    // The whole code is removed in a future.
+    if (this.state.uuid) {
+      fetch(`${GET_IMAGE_URLS}?uuid=${this.state.uuid}`)
+      // Decode json
+        .then(response => response.json())
+        .then((response) => {
+          // reject if something bad happens
+          if (response === null) {
+            throw Error('Image not found');
+          }
+          this.setState({
+            ...this.state,
+            imageUrls: response,
+            loading: false,
+          });
+        });
+    } else if (!!this.state.base64 === true) {
+      this.setState({
+        ...this.state,
+        imageUrls: {
+          url: this.state.base64,
+          thumbnail: this.state.base64,
+        },
+        loading: false,
+      });
+    }
+  }
+  render() {
+    if (this.state.loading !== true
+      && this.state.imageUrls.url !== ''
+      && this.state.imageUrls.url !== undefinedURL) {
+      return (
+        <Modal
+          trigger={
+            this.props.children ? this.props.children :
+            <Image
+              src={`${this.props.isTrusted
+                ? this.state.imageUrls.url
+                : this.state.imageUrls.thumbnail}`}
+              size="small"
+              style={{
+                backgroundImage: `url(${this.state.imageUrls.thumbnail})`,
+              }}
+            />
+          }
+          closeIcon
+        >
+          <Modal.Header>
+            <div>
+              <p>Photo</p>
+            </div>
+          </Modal.Header>
+          <Modal.Content>
+            <Responsive maxWidth={900}>
+              <Image
+                fluid
+                label={this.props.isTrusted ? null : {
+                  as: 'a',
+                  color: 'red',
+                  content: 'Unverified',
+                  icon: 'warning circle',
+                  ribbon: true,
+                }}
+                src={`${this.state.imageUrls.url}`}
+                style={{
+                  background: `url(${this.state.imageUrls.thumbnail}) no-repeat`,
+                  minHeight: '28vh',
+                }}
+              />
+            </Responsive>
+            <Responsive minWidth={900}>
+              <Image
+                size="massive"
+                label={this.props.isTrusted ? null : {
+                  as: 'a',
+                  color: 'red',
+                  content: 'Unverified',
+                  icon: 'warning circle',
+                  ribbon: true,
+                }}
+                src={`${this.state.imageUrls.url}`}
+                style={{
+                  background: `url(${this.state.imageUrls.thumbnail}) no-repeat`,
+                  minHeight: '60vh',
+                }}
+              />
+            </Responsive>
+          </Modal.Content>
+        </Modal>
+      );
+    }
     return (
-      <Modal trigger={
-        <Image
-          src={`${props.imageUrls.url}`}
-          size="small"
-          style={{ backgroundImage: `url(${props.imageUrls.thumbnail})` }}
-        />
-      }
-      >
-        <Modal.Header>Photo</Modal.Header>
-        <Modal.Content image>
-          <Responsive maxWidth={900}>
-            <Image fluid src={`${props.imageUrls.url}`} />
-          </Responsive>
-          <Responsive minWidth={900}>
-            <Image size="massive"src={`${props.imageUrls.url}`} />
-          </Responsive>
-        </Modal.Content>
-      </Modal>
+      <p>Image not available</p>
     );
   }
-  return (
-    <p>Image not available</p>
-  );
-};
+}
 
 ImageModal.propTypes = {
-  imageUrls: PropTypes.shape({
-    /* SVG url for the image thumbnail */
-    thumbnail: PropTypes.string,
-    /* Original image thumbnail */
-    url: PropTypes.string,
-  }),
+  uuid: PropTypes.string,
+  base64: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  isTrusted: PropTypes.bool,
 };
 ImageModal.defaultProps = {
-  imageUrls: false,
+  uuid: null,
+  base64: null,
+  isTrusted: false,
 };
-
-export default ImageModal;

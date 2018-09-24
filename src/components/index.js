@@ -4,6 +4,9 @@ import Sidebar from './Sidebar';
 import Event from './EventCard';
 import Menu from './Menu';
 import LoadingCard from './LoadingCard';
+import BottomBar from './Bottombar';
+import EventPreviewCard from './EventPreviewCard';
+import GeoLocator from './Geolocator';
 
 export {
   Image,
@@ -13,4 +16,7 @@ export {
   Sidebar,
   LoadingCard,
   Event,
+  BottomBar,
+  EventPreviewCard,
+  GeoLocator,
 };

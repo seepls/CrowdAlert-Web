@@ -16,6 +16,7 @@ const EventHeader = props => (
   <Feed style={eventStyles.header}>
     <Feed.Event>
       <Feed.Label>
+        {/* Updated in a later MR */}
         <Image
           src="https://react.semantic-ui.com/assets/images/avatar/small/jenny.jpg"
         />

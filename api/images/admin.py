@@ -1,2 +1,2 @@
-"""Admin file for django app images
+""" Admin file for django app images
 """

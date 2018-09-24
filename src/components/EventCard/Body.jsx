@@ -57,10 +57,15 @@ const Body = props => (
 );
 
 Body.propTypes = {
+  // Title of the incident
   title: PropTypes.string.isRequired,
+  // Whether the preview device is a desptop.
   desktop: PropTypes.bool,
+  // Description of the incident
   description: PropTypes.string,
+  // Images and other stuff
   children: PropTypes.node.isRequired,
+  //  Event type
   eventType: PropTypes.string,
 };
 Body.defaultProps = {
