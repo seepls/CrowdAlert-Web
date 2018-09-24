@@ -7,6 +7,7 @@ import {
 } from '../../components';
 import Viewevent from '../Viewevent';
 import Feed from '../Feed';
+import CreateEvent from '../CreateEvent';
 
 /**
  * [App Main entry point of the App]
@@ -15,36 +16,21 @@ import Feed from '../Feed';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      visible: false,
-    };
-    this.toggleVisibility = this.toggleVisibility.bind(this);
-  }
-  /**
-   * [toggleVisibility toogles visiblity of sidebar]
-   * @return {none}
-   */
-  toggleVisibility() {
-    this.setState({
-      visible: !this.state.visible,
-    });
+    this.state = {};
   }
   render() {
     // console.log(this.state);
     return (
-      <Sidebar
-        toggleVisibility={this.toggleVisibility}
-        visible={this.state.visible}
-      >
+      <Sidebar>
         <div>
-          <Menu toggleVisibility={this.toggleVisibility} />
+          <Menu />
         </div>
         <Route exact path="/view/:eventid" component={Viewevent} />
+        <Route exact path="/create" component={CreateEvent} />
         <Route exact path="/" component={Feed} />
       </Sidebar>
     );
   }
 }
-
 
 export default App;

@@ -10,5 +10,5 @@ class EventModel():
         NotImplementedError -- Not Implemented yet, will be used if we
         want to implement a ORM type cloud firestore object storage mechanism
     """
-
-    raise NotImplementedError
+    def __init__(self):
+        raise NotImplementedError

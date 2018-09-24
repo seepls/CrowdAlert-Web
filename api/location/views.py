@@ -69,8 +69,6 @@ class ReverseGeocodeView(APIView):
 
         return JsonResponse((rgc.get((lat, lng))))
 
-
-
 class IPLocationView(APIView):
     """Geocodes a request using IP
     """

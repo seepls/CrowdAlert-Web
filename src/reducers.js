@@ -1,40 +1,22 @@
-// import { fromJS } from 'immutable';
-import { combineReducers } from 'redux-immutable';
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux';
+import sidebarReducer from './components/Sidebar/reducers';
+import mapReducer from './components/Map/reducers';
+import feedReducer from './containers/Feed/reducers';
+import eventReducer from './containers/Viewevent/reducer';
+import eventPreviewReducer from './components/EventPreviewCard/reducers';
+import geoLocatorReducer from './components/Geolocator/reducers';
+import createEventsReducer from './containers/CreateEvent/reducers';
 
-// import globalReducer from 'containers/App/reducer';
-/**
- * [routeInitialState initial route description for app]
- * @type {Object}
- */
-const routeInitialState = {
-  location: null,
-};
-/**
- * [routeReducer reducer for route management]
- * @param  {Object} [state=routeInitialState] [takes the initial route stater]
- * @param  {String} action                    [takes a route action]
- * @return {Object}                           [a new state]
- */
-function routeReducer(state = routeInitialState, action) {
-  switch (action.type) {
-    case LOCATION_CHANGE:
-      return {
-        ...state,
-        location: action.payload,
-      };
-    default:
-      return state;
-  }
-}
-/**
- * [createReducer combines the route reducers with the injectedReducers]
- * @param  {Object} injectedReducers [custom reducers for every component]
- * @return {Object}                  [combined reducer object]
- */
-export default function createReducer(injectedReducers) {
-  return combineReducers({
-    route: routeReducer,
-    // global: injectedReducers,
-  });
-}
+const rootReducer = combineReducers({
+  router: routerReducer,
+  sidebar: sidebarReducer,
+  map: mapReducer,
+  feed: feedReducer,
+  event: eventReducer,
+  eventPreview: eventPreviewReducer,
+  geoLocator: geoLocatorReducer,
+  createEvents: createEventsReducer,
+});
+
+export default rootReducer;

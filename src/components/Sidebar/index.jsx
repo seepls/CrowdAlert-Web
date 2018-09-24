@@ -8,8 +8,12 @@ import {
   Image,
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import logo from '../../logo.png';
 import styles from './styles';
+import { removeSidebarVisibility } from './actions';
+// import { dispatch } from 'rxjs/internal/observable/pairs';
 
 /**
  * [LeftSidebar LeftSidebar for the app]
@@ -20,9 +24,8 @@ const LeftSidebar = props => (
     <Sidebar.Pushable as={Segment}>
       <Sidebar
         as={Menu}
-        animation="scale down"
-        width="wide"
-        visible={props.visible}
+        animation={props.animation}
+        visible={props.isVisible}
         vertical
         style={styles.sidebar}
         inverted
@@ -31,50 +34,36 @@ const LeftSidebar = props => (
           <Image src={logo} size="small" bordered centered />
         </Menu.Item>
 
-        <Link
-          to="/"
-          onClick={
-            props.visible
-            ? props.toggleVisibility
-            : null
-          }
-        >
+        <Link to="/" onClick={props.removeSidebarVisibility}>
           <Menu.Item name="home">
             <Icon name="home" />
             Home
           </Menu.Item>
         </Link>
-        <Menu.Item name="camera">
-          <Icon name="camera" />
-          Report
-        </Menu.Item>
+        <Link to="/create" onClick={props.removeSidebarVisibility}>
+          <Menu.Item name="camera">
+            <Icon name="camera" />
+            Report
+          </Menu.Item>
+        </Link>
         <Menu.Item name="user">
           <Icon name="user circle" />
           Profile
         </Menu.Item>
-
-        <Link
-          to="/view/-L6MrTH7NgTawjN-LOsd"
-          onClick={props.visible
-                    ? props.toggleVisibility
-                    : null}
-        >
+        <Link to="/view/-L6MrTH7NgTawjN-LOsd" onClick={props.removeSidebarVisibility}>
           <Menu.Item name="user">
             <Icon name="browser" />
-                        Sample Incident
+              Sample Incident
           </Menu.Item>
         </Link>
-
         <Menu.Item name="logout">
           <Icon name="sign out" />
-                    Sign out
+          Sign out
         </Menu.Item>
       </Sidebar>
       <Sidebar.Pusher
-        dimmed={props.visible}
-        onClick={props.visible
-                ? props.toggleVisibility
-                : null}
+        onClick={props.isVisible ? props.removeSidebarVisibility : null}
+        dimmed={props.animation === 'scale down' && props.isVisible? true : false}
       >
         {props.children}
       </Sidebar.Pusher>
@@ -83,10 +72,19 @@ const LeftSidebar = props => (
 );
 LeftSidebar.propTypes = {
   /* function to handle the visiblity */
-  toggleVisibility: propTypes.func.isRequired,
+  removeSidebarVisibility: propTypes.func.isRequired,
   /* bool denoting whether the sidebar is open or not */
-  visible: propTypes.bool.isRequired,
+  isVisible: propTypes.bool.isRequired,
+  animation: propTypes.string.isRequired,
   children: propTypes.node.isRequired,
 };
 
-export default LeftSidebar;
+const mapStateToProps = state => (
+  state.sidebar
+);
+const mapDispatchToProps = dispatch => (
+  bindActionCreators({
+    removeSidebarVisibility,
+  }, dispatch)
+);
+export default connect(mapStateToProps, mapDispatchToProps)(LeftSidebar);
