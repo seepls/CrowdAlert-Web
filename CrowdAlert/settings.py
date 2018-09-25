@@ -15,6 +15,7 @@ import json
 import dj_database_url
 import pyrebase
 import googlemaps
+import firebase_admin
 
 # Generate the Firebase Service Account Credential json file
 with open('serviceAccountCredentials.json','w') as f:
@@ -31,6 +32,9 @@ CONFIG = {
     "storageBucket": os.environ['REACT_APP_FIREBASE_PROJECT_ID'] + ".appspot.com",
     "serviceAccount": "./serviceAccountCredentials.json"
 }
+
+cred = firebase_admin.credentials.Certificate(config["serviceAccount"])
+FIREBASE_ADMIN = firebase_admin.initialize_app(cred)
 
 # Instantiate a Firebase - Pyrebase object so that we can import later
 FIREBASE = pyrebase.initialize_app(CONFIG)
@@ -66,6 +70,7 @@ INSTALLED_APPS = [
     'api.location',
     'api.images',
     'corsheaders',
+    'api.firebase_auth',
 ]
 
 MIDDLEWARE = [
@@ -142,7 +147,12 @@ STATICFILES_DIRS = [
   os.path.join(BASE_DIR, 'build/static'),
 #   os.path.join(BASE_DIR, 'build/'),
 ]
-
+# If we plan to use API wide authentication,
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'api.firebase_auth.authentication.TokenAuthentication', 
+#     ),
+# }
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -168,7 +178,18 @@ CORS_ORIGIN_WHITELIST = (
     'crowdalert.herokuapp.com',
     'localhost:3000',
 )
-
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'token',
+)
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 

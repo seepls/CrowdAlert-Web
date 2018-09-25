@@ -11,7 +11,7 @@ const styleSheet = {
   mobile: {
     width: '94%',
     position: 'fixed',
-    bottom: '0',
+    bottom: '50px',
     zIndex: 1001,
     margin: '3%',
   },

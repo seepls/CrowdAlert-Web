@@ -9,7 +9,7 @@ class CreateEvent extends Component {
   render() {
     console.log(this.state);
     return (
-      <Container>
+      <Container style={{ paddingBottom: '26vh' }}>
         <br />
         <Tab />
         <MapTab />

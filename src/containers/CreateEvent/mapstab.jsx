@@ -20,7 +20,7 @@ const MapTab = (props) => {
     return null;
   }
   return (
-    <Segment attached color="yellow" secondary>    
+    <Segment attached color="yellow">    
       <Grid>
         <Grid.Row>
           <div

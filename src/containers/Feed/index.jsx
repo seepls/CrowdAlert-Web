@@ -85,7 +85,6 @@ class Feed extends Component {
         </MapWrapper>
         <EventPreviewCard />
         <GeoLocator />
-        <BottomBar />
       </div>
     );
   }

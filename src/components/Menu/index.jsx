@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { toggleSidebarVisibility } from '../Sidebar/actions';
-
+import LoginButton from '../../containers/Auth/Loginbutton';
+import { UserSettingsMenu } from '../';
 import logo from '../../logo.png';
 
 /**
@@ -50,18 +51,39 @@ const MenuBar = props => (
         </Link>
       </Responsive>
     </Menu.Menu>
-    <div className="ui transparent icon input">
-      <input className="prompt" type="text" placeholder="Search ..." />
-    </div>
     <Menu.Menu position="right">
+      <Responsive as={Menu.Item} minWidth={992}>
+        {props.isLoggedIn ?
+          <p>Logged IN</p>
+          :
+          <Link to="/login">
+            <LoginButton login />
+          </Link>
+        }
+      </Responsive>
+      <Responsive as={Menu.Item} minWidth={992}>
+        {props.isLoggedIn ?
+          <UserSettingsMenu />
+          :
+          <Link to="/signup">
+            <LoginButton signup />
+          </Link>
+        }
+      </Responsive>
+      <Responsive as={Menu.Item} {...Responsive.onlyTablet}>
+        {props.isLoggedIn ?
+          <p>Logged IN</p>
+          :
+          <Link to="/login">
+            <LoginButton login />
+          </Link>
+        }
+      </Responsive>
+
       <Responsive as={Menu.Item} {...Responsive.onlyMobile}>
         <Icon name="search" />
       </Responsive>
-      <Responsive as={Menu.Item} {...Responsive.onlyTablet}>
-        Tablet
-      </Responsive>
-      <Responsive as={Menu.Item} {...Responsive.onlyLargeScreen}>Large Screen</Responsive>
-      <Responsive as={Menu.Item} {...Responsive.onlyWidescreen}>Widescreen</Responsive>
+
     </Menu.Menu>
   </Menu>
 );
@@ -70,9 +92,12 @@ MenuBar.propTypes = {
   toggleSidebarVisibility: propTypes.func.isRequired,
 };
 
-const mapStateToProps = state => (
-  state
-);
+const mapStateToProps = (state) => {
+  const { isLoggedIn } = state.auth;
+  return {
+    isLoggedIn,
+  };
+};
 const mapDispatchToProps = dispatch => (
   bindActionCreators({
     toggleSidebarVisibility,

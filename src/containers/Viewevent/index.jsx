@@ -45,7 +45,7 @@ MapwithSonar.propTypes = {
 const EventCard = props => (
   <Card style={styleSheet[props.viewmode].cardContainer}>
     <Event.Header
-      user_id={props.user_id}
+      reportedBy={props.reportedBy}
       dateTime={props.datetime}
       reverse_geocode={props.reverse_geocode}
     />
@@ -71,7 +71,7 @@ const EventCard = props => (
 );
 EventCard.propTypes = {
   viewmode: propTypes.string.isRequired,
-  user_id: propTypes.string.isRequired,
+  // reportedBy: propTypes..isRequired,
   datetime: propTypes.number.isRequired,
   title: propTypes.string.isRequired,
   description: propTypes.string,
@@ -114,33 +114,16 @@ class Viewevent extends Component {
     };
   }
   componentWillMount() {
-    const eventid = this.props.match.params.eventid;
+    const { eventid } = this.props.match.params;
     const shouldRefresh =
       this.props.match.params.eventid !== this.props.event.data.eventid;
 
     this.props.fetchEventData({ eventid, shouldRefresh });
-    //this.getEventData();
-  }
-  /**
-   * [getEventData Issue fetch requests to server to get data]
-   * @return {[none]}
-   */
-  getEventData() {
-    // Fetch the json data for the given event id
-    const lat = this.state.event.location.coords.latitude;
-    const long = this.state.event.location.coords.longitude;        
-    fetch()
-      .then((response) => {
-        this.setState({
-          ...this.state,
-          reverse_geocode: response,
-        });
-      })
   }
   render() {
     console.log('ViewEvent Props', this.props);
     return (
-      <div>
+      <div style={{ paddingTop: '1rem', marginBottom: '6rem' }}>
         <Responsive maxWidth={900}>
           <div style={styleSheet.mobile.mapContainer}>
             <MapwithSonar
@@ -158,7 +141,7 @@ class Viewevent extends Component {
               :
               <EventCard
                 viewmode="mobile"
-                user_id={this.props.event.data.user_id}
+                reportedBy={this.props.event.data.reportedBy}
                 datetime={this.props.event.data.datetime}
                 title={this.props.event.data.title}
                 description={this.props.event.data.description}
@@ -190,7 +173,7 @@ class Viewevent extends Component {
                         :
                         <EventCard
                           viewmode="desktop"
-                          user_id={this.props.event.data.user_id}
+                          reportedBy={this.props.event.data.reportedBy}
                           datetime={this.props.event.data.datetime}
                           title={this.props.event.data.title}
                           description={this.props.event.data.description}

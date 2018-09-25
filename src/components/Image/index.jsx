@@ -63,6 +63,7 @@ export default class ImageModal extends Component {
                 : this.state.imageUrls.thumbnail}`}
               size="small"
               style={{
+                height: '10rem',
                 backgroundImage: `url(${this.state.imageUrls.thumbnail})`,
               }}
             />
