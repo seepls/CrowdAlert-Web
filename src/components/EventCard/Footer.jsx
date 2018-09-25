@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Menu, Label, Icon, Dropdown } from 'semantic-ui-react';
+import { Menu, Label, Icon } from 'semantic-ui-react';
 import ShareModal from '../Share';
 
 /**
@@ -16,28 +16,15 @@ const EventFooter = props => (
           Upvoted
     </Menu.Item>
     <Menu.Item>
-      <Dropdown icon="bars">
-        {/* Removed Later */}
-        <Dropdown.Menu>
-          <Dropdown.Item>
-            <ShareModal title={props.title}>
-              <p>
-                <Icon color="black" name="external share" />
-                 Share
-              </p>
-            </ShareModal>
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <Icon color="black" name="warning circle" />Mark as Spam
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
+      <ShareModal title={props.title}>
+        <div>
+          <Icon color="black" name="external share" />
+              Share
+        </div>
+      </ShareModal>
     </Menu.Item>
-    <Menu.Item >
-      {/* Removed Later */}
-      <Icon color="blue" name="comments outline" />
-      <Label color="blue" floating>5</Label>
-          Comment
+    <Menu.Item>
+      <Icon color="black" name="flag" /> Flag
     </Menu.Item>
   </Menu>
 );

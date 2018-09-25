@@ -6,7 +6,14 @@ const styles = {
     height: '100vh',
   },
   sidebar: {
-    width: '300px',
+    // width: '300px',
+  },
+  bottomBar: {
+    width: '100%',
+    position: 'fixed',
+    bottom: '0',
+    zIndex: 1000,
+    margin: 'auto',
   },
   bottomBar: {
     width: '100%',

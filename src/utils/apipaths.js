@@ -40,6 +40,8 @@ const STATIC_IMAGES = `${domainNameL}/static/images`;
 
 const USER_PROFILES = `${domainNameL}/api/users/user`;
 
+const COMMENTS = `${domainNameL}/api/comments/comment`;
+
 export {
   GET_LOCATION_BY_IP,
   GET_EVENT_BY_ID,
@@ -49,4 +51,5 @@ export {
   UPLOAD_IMAGES,
   STATIC_IMAGES,
   USER_PROFILES,
+  COMMENTS,
 };

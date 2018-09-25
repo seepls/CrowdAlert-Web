@@ -59,6 +59,7 @@ const authMiddleware = ({ dispatch }) => next => (action) => {
         console.log('User Logged IN');
       } else {
         window.localStorage.setItem('shouldBeLoggedIn', false);
+        window.sessionStorage.removeItem('token');
         dispatch(updateUserAuthenticationData({
           loggedIn: false,
           user: null,
@@ -129,6 +130,7 @@ const emailPasswordAuthMiddleware = ({ dispatch }) => next => (action) => {
     Auth.signOut()
       .then(() => {
         dispatch(checkUserAuthenticationStatus());
+        window.sessionStorage.removeItem('token');
         history.push('/login/');
       })
       .catch((err) => { console.log('Error sign out', err); });

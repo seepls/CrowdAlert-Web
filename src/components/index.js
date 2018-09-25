@@ -8,6 +8,7 @@ import BottomBar from './Sidebar/bottomBar';
 import EventPreviewCard from './EventPreviewCard';
 import GeoLocator from './Geolocator';
 import UserSettingsMenu from './UserSettingsMenu';
+import CommentsSection from './Comments';
 
 export {
   Image,
@@ -21,4 +22,5 @@ export {
   EventPreviewCard,
   GeoLocator,
   UserSettingsMenu,
+  CommentsSection,
 };
