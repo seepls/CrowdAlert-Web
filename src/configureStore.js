@@ -25,9 +25,9 @@ export default function configureStore(initialState = {}, history) {
     initialState, // Initial state
     composeEnhancers(
       applyMiddleware(
-        appRouterMiddleware,
-        epicMiddleware,
+        appRouterMiddleware,        
         ...middlewares,
+        epicMiddleware,
       )  
     )
   )

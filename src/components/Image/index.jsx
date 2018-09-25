@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Image, Modal, Responsive } from 'semantic-ui-react';
-import fetch from 'isomorphic-fetch';
 import { GET_IMAGE_URLS } from '../../utils/apipaths';
 
 /**
  * [ImageModal Displays a small thumbnail & opens a large modal onclick]
  * @param {[type]} props [description]
  */
-
-// Removed in a future MR
-const undefinedURL = 'https://firebasestorage.googleapis.com/v0/b/crowdalert-4fa46.appspot.com/o/images%2Fundefined?alt=media';
 
 export default class ImageModal extends Component {
   constructor(props) {
@@ -24,20 +20,14 @@ export default class ImageModal extends Component {
   componentWillMount() {
     // The whole code is removed in a future.
     if (this.state.uuid) {
-      fetch(`${GET_IMAGE_URLS}?uuid=${this.state.uuid}`)
-      // Decode json
-        .then(response => response.json())
-        .then((response) => {
-          // reject if something bad happens
-          if (response === null) {
-            throw Error('Image not found');
-          }
-          this.setState({
-            ...this.state,
-            imageUrls: response,
-            loading: false,
-          });
-        });
+      this.setState({
+        ...this.state,
+        imageUrls: {
+          url: `${GET_IMAGE_URLS}?uuid=${this.state.uuid}`,
+          thumbnail: `${GET_IMAGE_URLS}?uuid=${this.state.uuid}&mode=thumbnail`,
+        },
+        loading: false,
+      });
     } else if (!!this.state.base64 === true) {
       this.setState({
         ...this.state,
@@ -51,8 +41,7 @@ export default class ImageModal extends Component {
   }
   render() {
     if (this.state.loading !== true
-      && this.state.imageUrls.url !== ''
-      && this.state.imageUrls.url !== undefinedURL) {
+      && this.state.imageUrls.url !== '') {
       return (
         <Modal
           trigger={
@@ -63,7 +52,8 @@ export default class ImageModal extends Component {
                 : this.state.imageUrls.thumbnail}`}
               size="small"
               style={{
-                height: '10rem',
+                height: '15vh',
+                width: '10rem',
                 backgroundImage: `url(${this.state.imageUrls.thumbnail})`,
               }}
             />

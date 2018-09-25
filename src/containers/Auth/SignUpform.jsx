@@ -46,6 +46,7 @@ class SignUpForm extends PureComponent {
               placeholder="Fullname"
               name="fullname"
               label="Fullname"
+              autoComplete="off"
               value={this.state.fullname}
               onChange={this.handleInputChange}
             />
@@ -55,6 +56,8 @@ class SignUpForm extends PureComponent {
               placeholder="Email"
               label="Email"
               name="email"
+              type="email"
+              autoComplete="off"
               value={this.state.email}
               onChange={this.handleInputChange}
             />
@@ -64,6 +67,7 @@ class SignUpForm extends PureComponent {
               placeholder="Password"
               label="Password"
               name="password"
+              type="password"
               value={this.state.password}
               onChange={this.handleInputChange} 
             />

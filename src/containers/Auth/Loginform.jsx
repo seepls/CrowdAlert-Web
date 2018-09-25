@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { submitEmailPasswordAuthentication } from './actions';
+
 class LoginForm extends Component {
   constructor(props) {
     super(props);
@@ -45,6 +46,7 @@ class LoginForm extends Component {
               placeholder="Email"
               label="Email"
               name="email"
+              type="email"
               value={this.state.email}
               onChange={this.handleInputChange}
               autoComplete="off"

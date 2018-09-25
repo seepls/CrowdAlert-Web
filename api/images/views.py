@@ -8,7 +8,7 @@ import base64
 import time
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from rest_framework.views import APIView
 
 STORAGE = settings.FIREBASE.storage()
@@ -58,6 +58,8 @@ class ImagesView(APIView):
 
         GET request parameters:
             uuid: uuid of the image whose urls are to be fetched. [Required]
+            mode: type of image, either of image or thumbnail
+        
         Arguments:
             request {[type]} -- [ Contains the django request object]
         Returns:
@@ -66,12 +68,16 @@ class ImagesView(APIView):
 
         """
 
-        uuid = request.GET.get('uuid')
-        if not uuid:
+        uuid = request.GET.get('uuid','')
+        mode = request.GET.get('mode', 'image')
+        if uuid == '':
             return HttpResponseBadRequest("Bad request: Specify the image uuid")
-        url = STORAGE.child('images').child(uuid).get_url('')
-        thumbnail_url = STORAGE.child('thumbnails').child(uuid.split('.')[0]+'.svg').get_url('')
-        return JsonResponse({'url': url, 'thumbnail': thumbnail_url})
+
+        if mode == 'image':
+            url = STORAGE.child('images').child(uuid).get_url('')
+        elif mode == 'thumbnail':
+            url = STORAGE.child('thumbnails').child(uuid.split('.')[0]+'.svg').get_url('')
+        return HttpResponseRedirect(url)
 
     def post(self, request):
         """ Allow users to post images i.e upload images to cloud storage.

@@ -10,7 +10,7 @@ const styleSheet = {
     itemContainer: {
       margin: '10px',
       paddingTop: '30vh',
-      paddingBottom: '26vh',
+      paddingBottom: '10vh',
       width: '100%',
     },
     cardContainer: {
