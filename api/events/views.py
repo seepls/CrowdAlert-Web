@@ -7,14 +7,20 @@ from django.http import JsonResponse, HttpResponseBadRequest
 from django.conf import settings
 from rest_framework.views import APIView
 from api.location.gps import distance
+from api.firebase_auth.authentication import TokenAuthentication
+from api.firebase_auth.permissions import FirebasePermissions
 
 DB = settings.FIREBASE.database()
 
 class EventView(APIView):
     """ API view class for events
     """
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (FirebasePermissions,)
+
     def get(self, request):
-        """ Event data for a given uuid
+        """Returns events within a certain radius for a given location
+
         GET request parameters:
             [REQUIRED]
             id: firebase event id
@@ -27,7 +33,14 @@ class EventView(APIView):
         query = request.GET.get('id', '')
         if query == '':
             return HttpResponseBadRequest("Bad request: No Id specified")
+
         data = DB.child('incidents').child(query).get().val()
+        for key in data['reportedBy']:
+            udata = DB.child('users').child(data['reportedBy'][key]).get().val()
+            data['reportedBy'][key] = {
+                'displayName': udata['displayName'],
+                'photoURL': udata['photoURL'],
+            }
         return JsonResponse(data, safe=False)
 
     def post(self, request):
@@ -38,8 +51,7 @@ class EventView(APIView):
             Location validation
             Spam classification
         """
-
-        event_data = request.POST.get('eventData', '')
+        event_data = json.loads(request.body.decode()).get('eventData', '')
         if event_data == '':
             return HttpResponseBadRequest("Bad request")
         decoded_json = json.loads(event_data)
@@ -47,10 +59,11 @@ class EventView(APIView):
         decoded_json['comments'] = ''
         decoded_json['images'] = {}
         decoded_json['upvotes'] = 0
-        decoded_json['user_email'] = "digital0signature@gmail.com"
-        decoded_json['user_id'] = "digital0signature@gmailcom"
         data = DB.child('incidents').push(decoded_json)
         key = data['name']
+        uid = str(request.user)
+        DB.child('incidents/' + str(key) + '/reportedBy/').push(uid)
+        DB.child('users/' + uid + '/incidents/').push(key)
         return JsonResponse({"eventId":str(key)})
 
 class MultipleEventsView(APIView):
@@ -102,13 +115,13 @@ class MultipleEventsView(APIView):
             temp['title'] = event['title']
             temp['datetime'] = event['datetime']
             tmplat = float(event['location']['coords']['latitude'])
-            tmplng = float(event['location']['coords']['longitude'])                
+            tmplng = float(event['location']['coords']['longitude'])
             dist = distance(tmplat, tmplng, lat, lng)
             if dist < thresold:
                 data.append(temp)
 
         # Cluster the events
-        cluster_thresold = float(request.GET.get('min',0))
+        cluster_thresold = float(request.GET.get('min', 0))
         # This code should also be present on client side
         if cluster_thresold:
             # clustered incidents data
@@ -123,7 +136,7 @@ class MultipleEventsView(APIView):
                         if child['key'] == root['key']:
                             continue
                         # If node is not clustered
-                        if not child.get('isClustered',False):
+                        if not child.get('isClustered', False):
                             # Calculate the distance
                             temp_distance = distance(root['lat'], root['long'],
                                                      child['lat'], child['long'])

@@ -4,9 +4,10 @@ import Sidebar from './Sidebar';
 import Event from './EventCard';
 import Menu from './Menu';
 import LoadingCard from './LoadingCard';
-import BottomBar from './Bottombar';
+import BottomBar from './Sidebar/bottomBar';
 import EventPreviewCard from './EventPreviewCard';
 import GeoLocator from './Geolocator';
+import UserSettingsMenu from './UserSettingsMenu';
 
 export {
   Image,
@@ -19,4 +20,5 @@ export {
   BottomBar,
   EventPreviewCard,
   GeoLocator,
+  UserSettingsMenu,
 };

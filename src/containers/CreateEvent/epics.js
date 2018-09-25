@@ -1,3 +1,4 @@
+/* global window */
 import { ajax } from 'rxjs/observable/dom/ajax';
 import { of } from 'rxjs/observable/of';
 import { ofType, combineEpics } from 'redux-observable';
@@ -36,6 +37,9 @@ const submitEventEpic = action$ =>
     ofType(CREATE_EVENTS_FORM_SUBMIT),
     mergeMap(action => ajax.post(GET_EVENT_BY_ID, {
       eventData: JSON.stringify(action.payload.eventData),
+    }, {
+      'Content-Type': 'application/json',
+      token: window.sessionStorage.getItem('token'),
     }).pipe(
       map(response => submitFormSuccessCreateEvents(response)),
       catchError(error => of(submitFormErrorCreateEvents(error))),

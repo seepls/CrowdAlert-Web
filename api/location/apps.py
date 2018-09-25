@@ -5,6 +5,6 @@ from django.apps import AppConfig
 
 
 class LocationConfig(AppConfig):
-    """ Internal cconfig for django app
+    """ Internal config for django app
     """
     name = 'location'

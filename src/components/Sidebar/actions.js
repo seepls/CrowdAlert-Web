@@ -2,6 +2,9 @@ import {
   SIDEBAR_TOGGLE_VISIBILITY,
   SIDEBAR_SET_VISIBILITY,
   SIDEBAR_REMOVE_VISIBILITY,
+  BOTTOMBAR_TOGGLE_VISIBILITY,
+  BOTTTOMBAR_SET_VISIBILITY,
+  BOTTTOMBAR_REMOVE_VISIBILITY,
 } from './actionTypes';
 
 /**
@@ -28,5 +31,20 @@ export function removeSidebarVisibility(payload = {}) {
   return {
     type: SIDEBAR_REMOVE_VISIBILITY,
     payload,
+  };
+}
+export function toggleVisibilityBottomBar() {
+  return {
+    type: BOTTOMBAR_TOGGLE_VISIBILITY,
+  };
+}
+export function setBottomBarVisibility() {
+  return {
+    type: BOTTTOMBAR_SET_VISIBILITY,
+  };
+}
+export function removeBottomBarVisibility() {
+  return {
+    type: BOTTTOMBAR_REMOVE_VISIBILITY,
   };
 }

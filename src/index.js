@@ -74,7 +74,7 @@ registerServiceWorker();
       window.removeEventListener('load', removeDimmer);
     }, delay);
   }
-
+  
   window.addEventListener('load', removeDimmer);
 }());
 /**

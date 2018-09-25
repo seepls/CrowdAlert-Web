@@ -7,5 +7,9 @@ firebase.initializeApp(firebaseConfig);
  * [database contains a reference to firebase database]
  * @type {[type]}
  */
-const database = firebase.database();
-export default database;
+window.firebase = firebase;
+// const database = firebase.database();
+export const Auth = firebase.auth();
+export const FacebookAuth = new firebase.auth.FacebookAuthProvider();
+export const GoogleAuth = new firebase.auth.GoogleAuthProvider();
+
