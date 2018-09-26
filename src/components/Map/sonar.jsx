@@ -47,8 +47,8 @@ const Sonar = props => (
       }}
   >
     <div>
-      <div className={`sonar-emitter ${props.type}`}>
-        <div className={`sonar-wave ${props.type}`} />
+      <div className={`sonar-emitter sonar_${props.type}`}>
+        <div className={`sonar-wave sonar_${props.type}`} />
       </div>
     </div>
   </MarkerWithLabel>

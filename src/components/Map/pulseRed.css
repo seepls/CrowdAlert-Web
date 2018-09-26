@@ -1,23 +1,26 @@
 
 /* https://codepen.io/thith/pen/vEOObL */
 /* The circle */
-.other {
+.sonar_other {
   background-color: #0020bd;
 }
-.road {
+.sonar_road {
   background-color: #a5673f;
 }
-.electric {
+.sonar_electric {
   background-color: #fb6d08;
 }
-.health {
+.sonar_health {
   background-color: #00b5ad;
 }
-.natural {
+.sonar_natural {
   background-color: #21ba45;
 }
-.fire {
+.sonar_fire {
   background-color: #db2828;
+}
+.sonar_nature {
+  background-color: #21ba45;
 }
 
 .sonar-emitter {

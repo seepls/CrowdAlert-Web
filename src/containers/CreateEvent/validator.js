@@ -4,7 +4,7 @@ export default ({ details, tabs }) => {
       validationErrors: true,
       message: {
         header: 'Location',
-        body: 'Save the location',
+        body: 'Please update the incident location',
       },
     };
   }
@@ -13,7 +13,7 @@ export default ({ details, tabs }) => {
       validationErrors: true,
       message: {
         header: 'Event not given',
-        body: 'Select an event type from the dropdown',
+        body: 'Please select an event type from the dropdown',
       },
     };
   }
@@ -22,7 +22,7 @@ export default ({ details, tabs }) => {
       validationErrors: true,
       message: {
         header: 'Short description not given',
-        body: 'Write a short description about the event',
+        body: 'Please write a short description about the event',
       },
     };
   }

@@ -80,6 +80,7 @@ const detailsInitialState = {
   description: '',
   public: true,
   help: false,
+  anonymous: false,
 };
 function detailsReducer(state = detailsInitialState, action) {
   if (action.type === CREATE_EVENTS_FORMS_UPDATE_EVENT_DETAILS) {

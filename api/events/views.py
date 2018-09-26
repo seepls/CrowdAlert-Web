@@ -36,11 +36,18 @@ class EventView(APIView):
 
         data = DB.child('incidents').child(query).get().val()
         for key in data['reportedBy']:
-            udata = DB.child('users').child(data['reportedBy'][key]).get().val()
-            data['reportedBy'][key] = {
-                'displayName': udata['displayName'],
-                'photoURL': udata['photoURL'],
-            }
+            if data['reportedBy'][key]['anonymous']:
+                data['reportedBy'][key] = {
+                    'displayName': "Anonymous",
+                    'photoURL': 'https://crowdalert.herokuapp.com/static/images/meerkat.svg',
+                }
+            else:
+                user_id = data['reportedBy'][key]['userId']
+                udata = DB.child('users/' + user_id).get().val()
+                data['reportedBy'][key] = {
+                    'displayName': udata['displayName'],
+                    'photoURL': udata['photoURL'],
+                }
         return JsonResponse(data, safe=False)
 
     def post(self, request):
@@ -55,16 +62,42 @@ class EventView(APIView):
         if event_data == '':
             return HttpResponseBadRequest("Bad request")
         decoded_json = json.loads(event_data)
-        decoded_json['datetime'] = int(time.time()*1000)
-        decoded_json['comments'] = ''
-        decoded_json['images'] = {}
-        decoded_json['upvotes'] = 0
-        data = DB.child('incidents').push(decoded_json)
-        key = data['name']
         uid = str(request.user)
-        DB.child('incidents/' + str(key) + '/reportedBy/').push(uid)
-        DB.child('users/' + uid + '/incidents/').push(key)
-        return JsonResponse({"eventId":str(key)})
+
+        latitude = decoded_json['location']['coords']['latitude']
+        longitude = decoded_json['location']['coords']['longitude']
+
+        incident_data = {
+            "category": decoded_json['category'],
+            "datetime": int(time.time()*1000),
+            "description": decoded_json['description'],
+            "local_assistance": decoded_json['local_assistance'],
+            "location": {
+                "coords": {
+                    "latitude": latitude,
+                    "longitude": longitude,
+                },
+            },
+            "public": {
+                "share": decoded_json['public']['share'],
+                "view":  decoded_json['public']['view'],
+            },
+            "reportedBy": {
+                "original": {
+                    "userId": uid,
+                    "anonymous": decoded_json['anonymous'],
+                },
+            },
+            "title": decoded_json['title']
+        }
+
+        data = DB.child('incidents').push(incident_data)
+
+        key = data['name']
+        DB.child('incidentReports/' + uid).push({
+            "incidentId": key,
+        })
+        return JsonResponse({"eventId":str(key)}) 
 
 class MultipleEventsView(APIView):
     """API View for grouping incidents by location

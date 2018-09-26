@@ -9,6 +9,8 @@ import {
   Image as SemanticImage,
   Icon,
   Progress,
+  Header,
+  Message,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -74,8 +76,12 @@ class ImagesTab extends Component {
   }
   handleUpload() {
     if (!this.props.reportForm.eventID) {
-      return;
+      // return;
     }
+    this.setState({
+      ...this.state,
+      errors: false,
+    });
     this.props.toggleImageUpload();
 
     const images = Object.keys(this.state.images).map(key =>
@@ -108,17 +114,21 @@ class ImagesTab extends Component {
             },
           };
           this.setState(newState);
-        })
-        .catch(() => {});
+        });
     });
-    Promise.all(imagesUpload).then(() => {
-      this.props.toggleImageUpload();
-    });
+    Promise.all(imagesUpload)
+      .then(() => {
+        this.props.toggleImageUpload();
+      })
+      .catch(() => {
+        this.props.toggleImageUpload();
+        this.setState({
+          ...this.state,
+          errors: true,
+        });
+      });
   }
   render() {
-    if (this.props.tabs.activeTab !== 2) {
-      return null;
-    }
     let uploaded = 0;
     const total = Object.keys(this.state.images).length;
 
@@ -129,6 +139,19 @@ class ImagesTab extends Component {
           <Loader />
         </Dimmer>
         <Segment attached color="brown">
+          <Header as="h3" dividing>
+            <Icon name="camera" />
+            <Header.Content>
+              Upload Images
+              <Header.Subheader>
+                Uploading images gives your report credibility
+              </Header.Subheader>
+              <Header.Subheader>
+                <br />
+              </Header.Subheader>
+
+            </Header.Content>
+          </Header>
 
           <Grid columns={2} divided>
             <Grid.Row>
@@ -181,7 +204,6 @@ class ImagesTab extends Component {
                     </Modal.Description>
                   </Modal.Content>
                 </Modal>
-
               </Grid.Column>
               <Grid.Column textAlign="center">
                 <Dropzone
@@ -206,6 +228,16 @@ class ImagesTab extends Component {
             </Grid.Row>
           </Grid>
         </Segment>
+        {this.state.errors ?
+          <Message
+            attached
+            negative
+            header="Error during upload"
+            content="Some of the images might not have been uploaded. Please retry"
+          />
+          :
+          null
+        }
         <Segment attached secondary>
           <Grid>
             <Grid.Row>
@@ -234,13 +266,21 @@ class ImagesTab extends Component {
                           />
                         </Image>
                       );
- })
+                    })
                   }
                 </SemanticImage.Group>
               </Grid.Column>
             </Grid.Row>
             <Grid.Row>
               <Grid.Column>
+                {this.props.reportForm.uploading ?
+                  <Progress
+                    percent={parseInt((uploaded / total) * 100, 10) || 10}
+                    color="teal"
+                    indicating
+                  />
+                : null
+                }
                 {
                   Object.keys(this.state.images).length ?
                     <div>
@@ -255,34 +295,28 @@ class ImagesTab extends Component {
                           <Icon name="check" />
                           Finish
                         </Button>
-                      :
-                        <Button
-                          color="brown"
-                          floated="right"
-                          onClick={this.handleUpload}
-                          loading={this.props.reportForm.uploading}
-                          disabled={this.props.reportForm.uploading}
-                        >
-                          <Icon name="cloud upload" />
-                          Upload
-                        </Button>
+                      : null 
+                      }
+                      {(!parseInt((uploaded / total), 10) &&
+                        !this.props.reportForm.uploading) ?
+                          <Button
+                            color="brown"
+                            floated="right"
+                            onClick={this.handleUpload}
+                            loading={this.props.reportForm.uploading}
+                            disabled={this.props.reportForm.uploading}
+                          >
+                            <Icon name="cloud upload" />
+                            Upload
+                          </Button>
+                        : null
                       }
                     </div>
-                    
                   : null
                 }
               </Grid.Column>
             </Grid.Row>
           </Grid>
-          {this.props.reportForm.uploading ?
-            <Progress
-              percent={parseInt((uploaded / total) * 100, 10)}
-              attached="bottom"
-              color="teal"
-            />
-          : null
-          }
-
         </Segment>
       </div>
     );
