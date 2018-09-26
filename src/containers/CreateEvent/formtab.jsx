@@ -7,40 +7,63 @@ import {
   TextArea,
   Icon,
   Input,
-  Label,
+  Header,
   Checkbox,
+  Progress,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { Link, Redirect } from 'react-router-dom';
 import getEventColor from '../../utils/eventcolors';
+import getEventIcon from '../../utils/eventicon';
+
 import {
   updateEventDetailsCreateEvents,
   validateFormCreateEvents,
+  changeTabCreateEventsForm,
 } from './actions';
 
 const eventOptions = [
-  { key: 'rd', text: 'Road', value: 'road' },
   { key: 'el', text: 'Electric', value: 'electric' },
-  { key: 'hl', text: 'Health', value: 'health' },
   { key: 'fr', text: 'Fire', value: 'fire' },
+  { key: 'hl', text: 'Health', value: 'health' },
+  { key: 'rd', text: 'Road', value: 'road' },
+  { key: 'nt', text: 'Nature', value: 'nature' },
 ];
 
 const FormTab = (props) => {
-  if (props.tabs.activeTab !== 1) {
-    return null;
+  if (props.reportForm.isFreezed && !props.reportForm.loading) {
+    return (<Redirect to="/create/images" />);
   }
   return (
-    <Segment
-      attached
-      color={getEventColor(props.details.eventType)}
-    >
+    <Segment>
+      <Progress
+        percent={66}
+        attached="top"
+        color={getEventColor(props.details.eventType)}
+      />
       <Grid>
         <Grid.Row>
           <Grid.Column>
+            <Header as="h3" dividing>
+              <Icon name="info" />
+              <Header.Content>
+                Incident Information
+                <Header.Subheader>
+                  We need to gather some information about the incident
+                </Header.Subheader>
+                <Header.Subheader>
+                  <br />
+                </Header.Subheader>
+              </Header.Content>
+            </Header>
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column>            
             <Form loading={props.reportForm.loading}>
               <Form.Field>
                 {props.reportForm.validationErrors ?
-                  // <h1>ERROR</h1>
                   <Message
                     negative
                     icon="ban"
@@ -48,39 +71,76 @@ const FormTab = (props) => {
                     content={props.reportForm.message.body}
                   />
                   : null }
+                <Header as="h4">
+                  <Icon name="marker" />
+                  <Header.Content>
+                      Incident Location
+                    <Header.Subheader>
+                      {props.location.text}
+                    </Header.Subheader>
+                    <Header.Subheader>
+                      <Link to="/create/location">Change</Link>
+                    </Header.Subheader>
+                  </Header.Content>
+                </Header>
+              </Form.Field>
+
+              <Form.Field required disabled={props.reportForm.isFreezed}>
+                <Header as="h4">
+                  <Icon
+                    color={getEventColor(props.details.eventType)}
+                    name={getEventIcon(props.details.eventType)} 
+                  />
+                  <Header.Content style={{ width: '100%' }}>
+                    Incident Type
+                    <Header.Subheader>
+                      <br />
+                    </Header.Subheader>
+                    <Header.Subheader>
+                      <Form.Select
+                        options={eventOptions}
+                        placeholder="Event Type"
+                        value={props.details.eventType}
+                        onChange={(e, { value }) =>
+                          props.handleInputChange({
+                            target: {
+                              value,
+                              name: 'eventType',
+                            },
+                          })
+                        }
+                      />
+                    </Header.Subheader>
+                  </Header.Content>
+                </Header>
               </Form.Field>
               <Form.Field required disabled={props.reportForm.isFreezed}>
-                <p>Event Type</p>
-                <Form.Select
-                  options={eventOptions}
-                  placeholder="Event Type"
-                  value={props.details.eventType}
-                  onChange={(e, { value }) =>
-                    props.handleInputChange({
-                      target: {
-                        value,
-                        name: 'eventType',
-                      },
-                    })
-                  }
-                />
+                <Header as="h4">
+                  <Icon name="edit" />
+                  <Header.Content style={{ width: '100%' }}>
+                    Short Description
+                    <Header.Subheader>
+                      <br />
+                    </Header.Subheader>
+                    <Header.Subheader>
+                      <Input
+                        name="title"
+                        label={{
+                          basic: true,
+                          content:
+                            `${50 - parseInt(props.details.title.length, 10)}`,
+                        }}
+                        labelPosition="right"
+                        onChange={props.handleInputChange}
+                        value={props.details.title}
+                        autoComplete="off"
+                        maxLength={50}
+                      />
+                    </Header.Subheader>
+                  </Header.Content>
+                </Header>
               </Form.Field>
-              <Form.Field required disabled={props.reportForm.isFreezed}>
-                <p>Short Description</p>
-                <Input
-                  name="title"
-                  label={{
-                    basic: true,
-                    content:
-                      `${props.details.title.length}/50`,
-                  }}
-                  labelPosition="right"
-                  onChange={props.handleInputChange}
-                  value={props.details.title}
-                  autoComplete="off"
-                  maxLength={50}
-                />
-              </Form.Field>
+
               <Form.Field disabled={props.reportForm.isFreezed}>
                 <TextArea
                   placeholder="Tell us more"
@@ -105,6 +165,19 @@ const FormTab = (props) => {
               </Form.Field>
               <Form.Field disabled={props.reportForm.isFreezed}>
                 <Checkbox
+                  label={{ children: 'Report incident anonymously' }}
+                  checked={props.details.anonymous}
+                  onChange={() => props.handleInputChange({
+                      target: {
+                        checked: !props.details.anonymous,
+                        name: 'anonymous',
+                        type: 'checkbox',
+                      },
+                    })}
+                />
+              </Form.Field>
+              <Form.Field disabled={props.reportForm.isFreezed}>
+                <Checkbox
                   label={{ children: 'Ask for public help' }}
                   checked={props.details.help}
                   name="help"
@@ -119,17 +192,20 @@ const FormTab = (props) => {
                     })}
                 />
               </Form.Field>
+
               <Form.Button
                 floated="right"
                 color="orange"
                 onClick={(e) => {
-                  e.preventDefault();
-                  props.handleSubmit();
+                    e.preventDefault();
+                    props.handleSubmit();
                   }
                 }
                 disabled={
-                  props.reportForm.loading
-                  || props.reportForm.isFreezed}
+                  props.reportForm.loading || props.reportForm.isFreezed
+                }
+                labelPosition="left"
+                icon
               >
                 <Icon name="check" /> Report Incident
               </Form.Button>
@@ -141,17 +217,18 @@ const FormTab = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    tabs: state.createEvents.tabs,
-    details: state.createEvents.details,
-    reportForm: state.createEvents.form,
-  };
-};
+const mapStateToProps = state => ({
+  tabs: state.createEvents.tabs,
+  location: state.createEvents.location,
+  details: state.createEvents.details,
+  reportForm: state.createEvents.form,
+});
 const mapDisptachToProps = dispatch => (
   bindActionCreators({
     handleInputChange: updateEventDetailsCreateEvents,
     handleSubmit: validateFormCreateEvents,
+    handleTabChange: changeTabCreateEventsForm,
+
   }, dispatch)
 );
 

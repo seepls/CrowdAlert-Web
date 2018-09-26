@@ -13,4 +13,3 @@ export const updateUserData = functions.auth.user().onCreate((user) => { // esli
     photoURL,
   });
 });
-

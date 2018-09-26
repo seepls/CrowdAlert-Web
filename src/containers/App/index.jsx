@@ -58,7 +58,7 @@ class App extends Component {
             <Menu />
           </div>
           <Route exact path="/view/:eventid" component={Viewevent} />
-          <PrivateRoute exact path="/create" component={CreateEvent} auth={this.props.isLoggedIn} />
+          <PrivateRoute path="/create" component={CreateEvent} auth={this.props.isLoggedIn} />
           <Route exact path="/" component={Feed} />
           <Route exact path="/login" component={LoginPage} />
           <Route exact path="/signup" component={SignUpPage} />

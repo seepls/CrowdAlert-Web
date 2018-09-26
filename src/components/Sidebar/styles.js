@@ -15,13 +15,6 @@ const styles = {
     zIndex: 1000,
     margin: 'auto',
   },
-  bottomBar: {
-    width: '100%',
-    position: 'fixed',
-    bottom: '0',
-    zIndex: 1000,
-    margin: 'auto',
-  },
 };
 
 export default styles;

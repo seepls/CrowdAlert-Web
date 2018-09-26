@@ -18,6 +18,9 @@ const getEventColor = (type) => {
     case 'electric':
       eventColor = 'yellow';
       break;
+    case 'nature':
+      eventColor = 'green';
+      break;
     default:
       eventColor = 'blue';
   }

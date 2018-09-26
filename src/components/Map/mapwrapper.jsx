@@ -74,6 +74,7 @@ class MapWrapper extends Component {
       lat,
       lng,
       zoom,
+      fetch: this.props.shouldFetch,
     });
   }
   /**
@@ -84,14 +85,12 @@ class MapWrapper extends Component {
     const lat = this.state.mapRef.getCenter().lat();
     const lng = this.state.mapRef.getCenter().lng();
     const zoom = this.state.mapRef.getZoom();
-    // If we should refetch the incidents again
-    if (this.props.shouldFetch) {
-      this.props.updateMapCenter({
-        lat,
-        lng,
-        zoom,
-      });
-    }
+    this.props.updateMapCenter({
+      lat,
+      lng,
+      zoom,
+      fetch: this.props.shouldFetch,
+    });
   }
   /**
    * Dispatches the map clicked incident if required

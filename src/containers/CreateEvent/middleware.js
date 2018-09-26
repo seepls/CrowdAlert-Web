@@ -1,6 +1,4 @@
-import { MAP_ONCLICK } from '../../components/Map/actionTypes';
 import formValidator from './validator';
-import { updateMapCenter } from '../../components/Map/actions';
 import {
   changeTabCreateEventsForm,
   changeTabValidationCreateEventsForm,
@@ -17,22 +15,6 @@ import {
 
 const createEventsMiddleware = store => next => (action) => {
   const { dispatch } = store;
-  if (action.type === MAP_ONCLICK) {
-    const state = store.getState();
-    const { lat } = action.payload;
-    const { lng } = action.payload;
-    // If form is freezed, don't allow to update.
-    if (!state.createEvents.form.isFreezed) {
-      dispatch(updateMapCenter({
-        lat,
-        lng,
-        fetch: false,
-      }));
-      dispatch(changeTabValidationCreateEventsForm('location', false));
-    } else {
-      return null;
-    }
-  }
   if (action.type === CREATE_EVENTS_FORM_UPDATE_LOCATION_TEXT) {
     const state = store.getState();
     // Kill the action if form is freezed

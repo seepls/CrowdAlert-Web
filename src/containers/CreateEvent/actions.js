@@ -123,6 +123,7 @@ export function submitFormCreateEvents({ location, details }) {
       view: details.public,
       share: details.help,
     },
+    anonymous: details.anonymous,
     location: {
       coords: {
         latitude: location.mapCenter.lat,
