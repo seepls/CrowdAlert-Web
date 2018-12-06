@@ -4,6 +4,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
+    
+ <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBL6xLml7K5c_Xe1FJiMGgJ1ifsvEtIWAo",
+    authDomain: "crowdalert-webapp.firebaseapp.com",
+    databaseURL: "https://crowdalert-webapp.firebaseio.com",
+    projectId: "crowdalert-webapp",
+    storageBucket: "crowdalert-webapp.appspot.com",
+    messagingSenderId: "156583818695"
+  };
+  firebase.initializeApp(config);
+</script>
     <script>
       // Redirect to HTTPS
       if (location.hostname === 'crowdalert.herokuapp.com' && location.protocol !== 'https:') {
